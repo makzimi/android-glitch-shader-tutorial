@@ -1,15 +1,33 @@
 *.iml
-.gradle
+.gradle/
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+.idea/
 .DS_Store
 /build
+*/build/
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+
+# Gradle files
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+!gradle/wrapper/gradle-wrapper.properties
+
+# Android Studio Navigation editor temp files
+.navigation/
+
+# Keystore files (for security)
+*.jks
+*.keystore
+
+# Google Services (if using Firebase)
+google-services.json
+
+# Crashlytics
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
