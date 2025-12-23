@@ -1,6 +1,9 @@
 # Android Glitch Shader Tutorial
 
 A quick tutorial on creating glitch effects with AGSL shaders in Android.
+  
+[7.webm](https://github.com/user-attachments/assets/4fa793b6-a287-4657-9f34-56151138cadd)
+
 
 ## What's Inside
 
