@@ -1,4 +1,4 @@
-# Android Glitch Shader
+# Android Glitch Shader Tutorial
 
 A quick tutorial on creating glitch effects with AGSL shaders in Android.
   
