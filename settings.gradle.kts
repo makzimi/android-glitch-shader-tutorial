@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Shaders"
+rootProject.name = "GlitchShaderTutorial"
 include(":app")
  

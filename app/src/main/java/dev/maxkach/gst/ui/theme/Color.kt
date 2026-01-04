@@ -1,4 +1,4 @@
-package dev.maxkach.shaders.ui.theme
+package dev.maxkach.gst.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

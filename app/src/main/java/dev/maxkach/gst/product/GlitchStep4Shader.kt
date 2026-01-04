@@ -1,6 +1,6 @@
-package dev.maxkach.shaders.product
+package dev.maxkach.gst.product
 
-const val GLITCH_STEP_3_SHADER = """
+const val GLITCH_STEP_4_SHADER = """
 uniform shader image;
 uniform float2 imageSize;
 uniform float time;
@@ -26,7 +26,8 @@ vec4 main(vec2 fragCoord) {
     float sliceHeight = 1.0 / float(numSlices);
     int sliceIndex = int(uv.y / sliceHeight);
 
-    float r = rand(float(sliceIndex));
+    float frame = floor(time);
+    float r = rand(float(sliceIndex) + frame + realRandom * 100.0);
 
     float sliceGlitch = 0.0;
     if (r > 0.7) {

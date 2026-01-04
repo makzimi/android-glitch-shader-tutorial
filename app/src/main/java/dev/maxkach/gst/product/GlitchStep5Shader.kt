@@ -1,4 +1,4 @@
-package dev.maxkach.shaders.product
+package dev.maxkach.gst.product
 
 const val GLITCH_STEP_5_SHADER = """
 uniform shader image;

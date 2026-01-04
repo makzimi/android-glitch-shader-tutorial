@@ -1,4 +1,4 @@
-package dev.maxkach.shaders.samples
+package dev.maxkach.gst.samples
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -8,10 +8,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import dev.maxkach.shaders.product.GLITCH_STEP_3_SHADER
-import dev.maxkach.shaders.product.ProductCardStateCreator
+import dev.maxkach.gst.product.GLITCH_STEP_3_SHADER
+import dev.maxkach.gst.product.ProductCardStateCreator
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun GlitchStep3Screen(
     onBackPressed: () -> Unit,

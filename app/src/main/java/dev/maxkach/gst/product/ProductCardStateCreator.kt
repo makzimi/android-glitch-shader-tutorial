@@ -1,11 +1,11 @@
-package dev.maxkach.shaders.product
+package dev.maxkach.gst.product
 
 import androidx.compose.ui.graphics.Color
 import dev.maxkach.shaders.R
-import dev.maxkach.shaders.product.ProductCardState.ColorsState
-import dev.maxkach.shaders.product.ProductCardState.ColorsState.ColorState
-import dev.maxkach.shaders.product.ProductCardState.ImagesState
-import dev.maxkach.shaders.product.ProductCardState.ImagesState.ImageState
+import dev.maxkach.gst.product.ProductCardState.ColorsState
+import dev.maxkach.gst.product.ProductCardState.ColorsState.ColorState
+import dev.maxkach.gst.product.ProductCardState.ImagesState
+import dev.maxkach.gst.product.ProductCardState.ImagesState.ImageState
 import kotlinx.collections.immutable.persistentListOf
 
 object ProductCardStateCreator {

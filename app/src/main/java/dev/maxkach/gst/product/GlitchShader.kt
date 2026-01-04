@@ -1,4 +1,4 @@
-package dev.maxkach.shaders.product
+package dev.maxkach.gst.product
 
 import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import kotlin.random.Random
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun Modifier.glitchShader(
     shaderSource: String,

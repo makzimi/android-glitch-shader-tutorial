@@ -1,4 +1,4 @@
-package dev.maxkach.shaders.ui.theme
+package dev.maxkach.gst.ui.theme
 
 import android.app.Activity
 import android.os.Build

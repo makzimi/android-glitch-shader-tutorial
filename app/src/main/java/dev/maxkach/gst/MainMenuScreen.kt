@@ -1,4 +1,4 @@
-package dev.maxkach.shaders
+package dev.maxkach.gst
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,8 +19,6 @@ import androidx.compose.ui.unit.dp
 
 sealed class ShaderScreen {
     data object MainMenu : ShaderScreen()
-    data object RedTintSample : ShaderScreen()
-    data object MovingGradientSample : ShaderScreen()
     data object GlitchStep1 : ShaderScreen()
     data object GlitchStep2 : ShaderScreen()
     data object GlitchStep3 : ShaderScreen()
@@ -57,37 +55,27 @@ fun MainMenuScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SampleButton(
-                    title = "1. Red Tint Shader",
-                    onClick = { onNavigate(ShaderScreen.RedTintSample) }
-                )
-
-                SampleButton(
-                    title = "2. Moving Gradient",
-                    onClick = { onNavigate(ShaderScreen.MovingGradientSample) }
-                )
-
-                SampleButton(
-                    title = "3. Horizontal Wave Static",
+                    title = "Step 1. Horizontal Wave Static",
                     onClick = { onNavigate(ShaderScreen.GlitchStep1) }
                 )
 
                 SampleButton(
-                    title = "4. Horizontal Wave Animated",
+                    title = "Step 2. Horizontal Wave Animated",
                     onClick = { onNavigate(ShaderScreen.GlitchStep2) }
                 )
 
                 SampleButton(
-                    title = "5. Slice Glitch Static",
+                    title = "Step 3. Slice Glitch Static",
                     onClick = { onNavigate(ShaderScreen.GlitchStep3) }
                 )
 
                 SampleButton(
-                    title = "6. Slice Glitch Animated",
+                    title = "Step 4. Slice Glitch Animated",
                     onClick = { onNavigate(ShaderScreen.GlitchStep4) }
                 )
 
                 SampleButton(
-                    title = "7. Full RGB Split + Noise",
+                    title = "Step 5. Full RGB Split + Noise",
                     onClick = { onNavigate(ShaderScreen.GlitchStep5) }
                 )
             }

@@ -1,4 +1,4 @@
-package dev.maxkach.shaders.product
+package dev.maxkach.gst.product
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color

@@ -1,12 +1,10 @@
-package dev.maxkach.shaders.product
+package dev.maxkach.gst.samples
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -15,6 +13,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,31 +21,38 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -55,48 +61,210 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import dev.maxkach.shaders.R
-import dev.maxkach.shaders.product.ProductCardState.ColorsState
-import dev.maxkach.shaders.product.ProductCardState.ImagesState
+import dev.maxkach.gst.product.ProductCardState
+import dev.maxkach.gst.product.ProductCardState.ColorsState
+import dev.maxkach.gst.product.ProductCardState.ImagesState
+import dev.maxkach.gst.product.glitchShader
 import kotlin.math.absoluteValue
 
 @Composable
-fun ProductCardWithRedTint(
+fun GlitchStepScreen(
     state: ProductCardState,
+    stepTitle: String,
+    shaderSource: String,
+    onColorClicked: (Int) -> Unit,
+    onImageChanged: (Int) -> Unit,
+    onBackPressed: () -> Unit,
     modifier: Modifier = Modifier,
-    onColorClicked: (Int) -> Unit = { },
-    onImageChanged: (Int) -> Unit = { },
+    hasSlices: Boolean = false,
+    defaultSlices: Float = 16f,
+    hasFrameDuration: Boolean = false,
+    defaultFrameDuration: Int = 16,
+    hasNoiseIntensity: Boolean = false,
+    defaultNoiseIntensity: Float = 1f,
+    hasColorBars: Boolean = false,
+    defaultColorBarsEnabled: Boolean = false,
+    hasRgbSplit: Boolean = false,
+    defaultRgbSplitIntensity: Float = 1f,
 ) {
+    var glitchIntensity by remember { mutableFloatStateOf(1f) }
+    var slicesCount by remember { mutableFloatStateOf(defaultSlices) }
+    var frameDurationMs by remember { mutableIntStateOf(defaultFrameDuration) }
+    var noiseIntensity by remember { mutableFloatStateOf(defaultNoiseIntensity) }
+    var colorBarsEnabled by remember { mutableStateOf(defaultColorBarsEnabled) }
+    var rgbSplitIntensity by remember { mutableFloatStateOf(defaultRgbSplitIntensity) }
+
+    val scrollState = rememberScrollState()
+
     Scaffold(
         modifier = modifier,
-        topBar = { TopBar(state.title) },
+        topBar = { TopBar(stepTitle, onBackPressed) },
         content = { innerPadding ->
-            val transition = rememberInfiniteTransition()
-            val intensity by transition.animateFloat(
-                initialValue = 0f,
-                targetValue = 0.5f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 500),
-                    repeatMode = RepeatMode.Reverse
-                ),
-            )
-
             Column(
-                modifier = Modifier.padding(
-                    top = innerPadding.calculateTopPadding() + 12.dp,
-                    bottom = innerPadding.calculateBottomPadding() + 12.dp,
-                )
-                    .redTintShader { intensity }
-                ,
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .padding(
+                        top = innerPadding.calculateTopPadding() + 12.dp,
+                        bottom = innerPadding.calculateBottomPadding() + 12.dp,
+                    ),
             ) {
                 Images(
                     images = state.images,
                     modifier = Modifier,
                     onImageChanged = onImageChanged,
+                    shaderModifier = Modifier.glitchShader(
+                        shaderSource = shaderSource,
+                        intensity = glitchIntensity,
+                        slices = slicesCount,
+                        frameDuration = frameDurationMs,
+                        noiseIntensity = noiseIntensity,
+                        colorBarsEnabled = colorBarsEnabled,
+                        rgbSplitIntensity = rgbSplitIntensity
+                    )
                 )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                        .padding(horizontal = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Intensity:",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        Slider(
+                            value = glitchIntensity,
+                            onValueChange = { glitchIntensity = it },
+                            valueRange = 0f..2f,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Text(
+                            text = "%.1f".format(glitchIntensity),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+
+                    if (hasSlices) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = "Slices:",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Slider(
+                                value = slicesCount,
+                                onValueChange = { slicesCount = it },
+                                valueRange = 1f..100f,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "%d".format(slicesCount.toInt()),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
+
+                    if (hasFrameDuration) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = "Frame:",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Slider(
+                                value = frameDurationMs.toFloat(),
+                                onValueChange = { frameDurationMs = it.toInt() },
+                                valueRange = 16f..600f,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "%dms".format(frameDurationMs),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
+
+                    if (hasNoiseIntensity) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = "Noise:",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Slider(
+                                value = noiseIntensity,
+                                onValueChange = { noiseIntensity = it },
+                                valueRange = 0f..10f,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "%.1f".format(noiseIntensity),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
+
+                    if (hasColorBars) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = "Color Bars:",
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Switch(
+                                checked = colorBarsEnabled,
+                                onCheckedChange = { colorBarsEnabled = it }
+                            )
+                        }
+                    }
+
+                    if (hasRgbSplit) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = "RGB Split:",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Slider(
+                                value = rgbSplitIntensity,
+                                onValueChange = { rgbSplitIntensity = it },
+                                valueRange = 0f..5f,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                text = "%.1f".format(rgbSplitIntensity),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
+                }
+
                 ColorControls(
                     state = state.colors,
                     modifier = Modifier
@@ -120,6 +288,7 @@ fun ProductCardWithRedTint(
 @Composable
 private fun TopBar(
     title: String,
+    onBackPressed: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     TopAppBar(
@@ -132,6 +301,14 @@ private fun TopBar(
                 style = MaterialTheme.typography.titleLarge
             )
         },
+        navigationIcon = {
+            IconButton(onClick = onBackPressed) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_back),
+                    contentDescription = "Back"
+                )
+            }
+        }
     )
 }
 
@@ -147,28 +324,28 @@ private fun AboutProduct(
     )
 }
 
-@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Images(
     images: ImagesState,
     modifier: Modifier = Modifier,
     onImageChanged: (Int) -> Unit = { },
+    shaderModifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(
         initialPage = images.currentImage,
         pageCount = { images.imagesRes.size }
     )
 
-    // Sync pager with external state changes
-    androidx.compose.runtime.LaunchedEffect(images.currentImage) {
+    LaunchedEffect(images.currentImage) {
         if (pagerState.currentPage != images.currentImage) {
             pagerState.animateScrollToPage(images.currentImage)
         }
     }
 
-    // Notify when pager changes
-    androidx.compose.runtime.LaunchedEffect(pagerState) {
-        androidx.compose.runtime.snapshotFlow { pagerState.currentPage }.collect { page ->
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { page ->
             if (page != images.currentImage) {
                 onImageChanged(page)
             }
@@ -181,7 +358,7 @@ private fun Images(
     ) {
         HorizontalPager(
             state = pagerState,
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 40.dp),
+            contentPadding = PaddingValues(horizontal = 40.dp),
             pageSpacing = 16.dp,
             modifier = Modifier.fillMaxWidth()
         ) { page ->
@@ -206,6 +383,7 @@ private fun Images(
                         this.translationX = translationX
                     }
                     .clip(shape = RoundedCornerShape(20.dp))
+                    .then(shaderModifier)
                     .then(
                         if (images.imagesRes[page].outOfStock) {
                             Modifier.alpha(0.5f)
@@ -331,27 +509,5 @@ private fun ColorControls(
                 )
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun ProductCardPreview() {
-    Surface {
-        var selectedImage by remember { mutableIntStateOf(0) }
-        var selectedColor by remember { mutableIntStateOf(0) }
-
-        ProductCardWithRedTint(
-            modifier = Modifier.fillMaxSize(),
-            state = ProductCardStateCreator.create(selectedImage, selectedColor),
-            onColorClicked = { newColor ->
-                selectedColor = newColor
-                selectedImage = newColor
-            },
-            onImageChanged = { newImage ->
-                selectedImage = newImage
-                selectedColor = newImage
-            },
-        )
     }
 }
