@@ -1,7 +1,5 @@
 package dev.maxkach.gst.samples
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -11,7 +9,6 @@ import androidx.compose.ui.Modifier
 import dev.maxkach.gst.product.GLITCH_STEP_1_SHADER
 import dev.maxkach.gst.product.ProductCardStateCreator
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun GlitchStep1Screen(
     onBackPressed: () -> Unit,
