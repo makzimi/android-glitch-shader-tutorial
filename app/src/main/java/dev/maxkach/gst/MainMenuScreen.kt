@@ -39,7 +39,7 @@ fun MainMenuScreen(
                 colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 title = {
                     Text(
-                        text = "AGSL Shader Samples",
+                        text = "Glitch Shader Tutorial",
                         style = MaterialTheme.typography.titleLarge
                     )
                 },
