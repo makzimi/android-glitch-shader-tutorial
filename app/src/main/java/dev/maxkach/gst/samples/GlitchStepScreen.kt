@@ -63,7 +63,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import dev.maxkach.shaders.R
+import dev.maxkach.gst.R
 import dev.maxkach.gst.product.ProductCardState
 import dev.maxkach.gst.product.ProductCardState.ColorsState
 import dev.maxkach.gst.product.ProductCardState.ImagesState

@@ -1,7 +1,7 @@
 package dev.maxkach.gst.product
 
 import androidx.compose.ui.graphics.Color
-import dev.maxkach.shaders.R
+import dev.maxkach.gst.R
 import dev.maxkach.gst.product.ProductCardState.ColorsState
 import dev.maxkach.gst.product.ProductCardState.ColorsState.ColorState
 import dev.maxkach.gst.product.ProductCardState.ImagesState
